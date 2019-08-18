@@ -101,9 +101,9 @@ with open_book(bookPath, readonly=False) as book:
         if stripeTransaction.type == 'charge':
             # build description for gnu cash
             description = "Stripe "
-            if 'statement_descriptor' in stripeTransaction.source:
+            if stripeTransaction.source.statement_descriptor is not None:
                 description += stripeTransaction.source.statement_descriptor + ": "
-            elif 'statement_descriptor_suffix' in stripeTransaction.source:
+            elif stripeTransaction.source.statement_descriptor is not None:
                 description += stripeTransaction.source.statement_descriptor_suffix + ": "
             if 'user_id' in stripeTransaction.source.metadata:
                 description += stripeTransaction.source.metadata.user_id + ", "
