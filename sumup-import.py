@@ -213,7 +213,7 @@ with open_book(bookPath, readonly=False) as book:
         book.save()
 
     # update last run date
-    config['Stripe']['last_run'] = datetime.now().isoformat()
+    config['SumUp']['last_run'] = datetime.now().isoformat()
 
     # and save it to the config
     with open(configFilename, 'w') as configfile:
