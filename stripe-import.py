@@ -66,7 +66,7 @@ logger.info('Last Run: ' + str(lastRunDate))
 # go back 24 hours from our last run to make sure we don't miss anything
 fetchTimestamp = int((lastRunDate - timedelta(days=1)).timestamp())
 
-stripeTransactions = stripe.BalanceTransaction.list(limit=1000, expand=['data.source'])
+stripeTransactions = stripe.BalanceTransaction.list(limit=1000, created={'gt': fetchTimestamp}, expand=['data.source'])
 logger.info("Fetched {} transactions from Stripe".format(len(stripeTransactions)))
 
 if (len(stripeTransactions) == 0):
@@ -100,7 +100,11 @@ with open_book(bookPath, readonly=False) as book:
 
         if stripeTransaction.type == 'charge':
             # build description for gnu cash
-            description = "Stripe " + stripeTransaction.source.statement_descriptor + ": "
+            description = "Stripe "
+            if 'statement_descriptor' in stripeTransaction.source:
+                description += stripeTransaction.source.statement_descriptor + ": "
+            elif 'statement_descriptor_suffix' in stripeTransaction.source:
+                description += stripeTransaction.source.statement_descriptor_suffix + ": "
             if 'user_id' in stripeTransaction.source.metadata:
                 description += stripeTransaction.source.metadata.user_id + ", "
             if 'name' in stripeTransaction.source.billing_details:
@@ -114,6 +118,8 @@ with open_book(bookPath, readonly=False) as book:
                 if stripeTransaction.source.metadata.type.upper() == 'SNACKSPACE':
                     toAccount = snackspaceIncomeAccount
             elif stripeTransaction.source.statement_descriptor == 'Snackspace':
+                toAccount = snackspaceIncomeAccount
+            elif stripeTransaction.source.statement_descriptor_suffix == 'Snackspace':
                 toAccount = snackspaceIncomeAccount
 
             Transaction(currency=gbp,
