@@ -103,7 +103,7 @@ with open_book(bookPath, readonly=False) as book:
             description = "Stripe "
             if stripeTransaction.source.statement_descriptor is not None:
                 description += stripeTransaction.source.statement_descriptor + ": "
-            elif stripeTransaction.source.statement_descriptor is not None:
+            elif stripeTransaction.source.statement_descriptor_suffix is not None:
                 description += stripeTransaction.source.statement_descriptor_suffix + ": "
             if 'user_id' in stripeTransaction.source.metadata:
                 description += stripeTransaction.source.metadata.user_id + ", "
