@@ -87,7 +87,7 @@ with open_book(bookPath, readonly=False) as book:
             transferAccount = book.accounts(fullname=transaction['transferAccount'])
         except KeyError as e:
             logger.warn("Unable to find Account: {}".format(transaction['transferAccount']))
-            print(json.dumps('Transaction not imported: Unable to find Account'))
+            print(json.dumps("Transaction not imported: Unable to find Account: {}".format(hashString)))
         else:
             # build hash for transaction to use a an UID
             hashString = "{}:{};{}".format(transaction['date'], transaction['description'], transaction['amount'])
