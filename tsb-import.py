@@ -63,6 +63,10 @@ config.read(configFilename)
 
 # gnucash book we are working with
 bookPath = config['GNUCash']['book_path']
+
+# get current rent amounts from config
+f6Rent = int(config['GNUCash']['f6_rent'])
+g456Rent = int(config['GNUCash']['g456_rent'])
 logger.info("Into GnuCash book: {}".format(bookPath))
 
 with open_book(bookPath, readonly=False) as book:
@@ -107,15 +111,39 @@ with open_book(bookPath, readonly=False) as book:
             amount = Decimal(transaction['amount'])/100
             createdAt = isoparse(transaction['date']).astimezone(pytz.timezone("Europe/London"))
 
-            Transaction(currency=gbp,
-                        enter_date=createdAt,
-                        post_date=createdAt.date(),
-                        num=hashHex,
-                        description=transaction['description'],
-                        splits=[
-                            Split(account=tsbAccount, value=amount),
-                            Split(account=transferAccount, value=-1*amount)
-                        ])
+            if (transaction['transferAccount'] == 'Expenses:Bizspace Rent:F6' and (-1*transaction['amount']) > (f6Rent+g456Rent)):
+                # pre slipt the rent
+                # grab extra accounts we need
+                g456Account = book.accounts(fullname="Expenses:Bizspace Rent:G4,5,6")
+                electricAccont = book.accounts(fullname="Expenses:Utilities:Electric")
+
+                # prep rent ammounts
+                f6Amount = Decimal(f6Rent)/100
+                g456Amount = Decimal(g456Rent)/100
+                # calculate electric amount
+                electricAmount = Decimal(transaction['amount'] + f6Rent + g456Rent)/100
+
+                Transaction(currency=gbp,
+                            enter_date=createdAt,
+                            post_date=createdAt.date(),
+                            num=hashHex,
+                            description=transaction['description'],
+                            splits=[
+                                Split(account=tsbAccount, value=amount),
+                                Split(account=transferAccount, value=f6Amount), #F6
+                                Split(account=g456Account, value=g456Amount),
+                                Split(account=electricAccont, value=-1*electricAmount)
+                            ])
+            else:
+                Transaction(currency=gbp,
+                            enter_date=createdAt,
+                            post_date=createdAt.date(),
+                            num=hashHex,
+                            description=transaction['description'],
+                            splits=[
+                                Split(account=tsbAccount, value=amount),
+                                Split(account=transferAccount, value=-1*amount)
+                            ])
 
             # save the book
             if not book.is_saved:
