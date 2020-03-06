@@ -150,7 +150,7 @@ with open_book(bookPath, readonly=False) as book:
                 elif (transaction['amount'] == -4833):
                     payableAmount = Decimal(4167)/100
                     intrestAmount = Decimal(666)/100
-                elif (transaction['amount'] == 1-2083):
+                elif (transaction['amount'] == 1-12083):
                     payableAmount = Decimal(10417)/100
                     intrestAmount = Decimal(1666)/100
                 else:
