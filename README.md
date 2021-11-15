@@ -8,8 +8,7 @@ Python3 libaries
 piecash
 stripe
 requests
-req
-uests_oauthlib
+requests_oauthlib
 python-dateutil
 ```
 
