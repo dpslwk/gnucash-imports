@@ -67,6 +67,7 @@ bookPath = config['GNUCash']['book_path']
 # get current rent amounts from config
 f6Rent = int(config['GNUCash']['f6_rent'])
 g456Rent = int(config['GNUCash']['g456_rent'])
+auditMinimumAmount = int(config['GNUCash']['audit_minimum_amount'])
 logger.info("Into GnuCash book: {}".format(bookPath))
 
 with open_book(bookPath, readonly=False) as book:
@@ -74,6 +75,7 @@ with open_book(bookPath, readonly=False) as book:
     # grab extra accounts we need
     g456Account = book.accounts(fullname="Expenses:Bizspace Rent:G4,5,6")
     electricAccont = book.accounts(fullname="Expenses:Utilities:Electric")
+    donationsMembershipAccount = book.accounts(fullname="Income:Donations:Membership Payments")
     gbp = tsbAccount.commodity
 
     importCount = 0
@@ -118,8 +120,8 @@ with open_book(bookPath, readonly=False) as book:
             splits = []
 
             if (transaction['transferAccount'] == 'Expenses:Bizspace Rent:F6' and (-1*transaction['amount']) > (f6Rent+g456Rent)):
-                # pre slipt the rent
-                # prep rent ammounts
+                # pre spilt the rent
+                # prep rent amounts
                 f6Amount = Decimal(f6Rent)/100
                 g456Amount = Decimal(g456Rent)/100
 
@@ -132,6 +134,22 @@ with open_book(bookPath, readonly=False) as book:
                     Split(account=g456Account, value=g456Amount),
                     Split(account=electricAccont, value=-1*electricAmount)
                 ];
+            elif transaction['transferAccount'] == 'Income:Membership Payments':
+                if transaction['amount'] < auditMinimumAmount:
+                    # payments less than the minimum are counted as donations
+                    splits=[
+                        Split(account=tsbAccount, value=amount),
+                        Split(account=donationsMembershipAccount, value=amount),
+                    ];
+                else:
+                    membershipAmount = Decimal(auditMinimumAmount)/100
+                    donationsAmount = Decimal(transaction['amount'] - auditMinimumAmount)/100
+
+                    splits=[
+                        Split(account=tsbAccount, value=amount),
+                        Split(account=transferAccount, value=membershipAmount),
+                        Split(account=donationsMembershipAccount, value=donationsAmount),
+                    ];
             else:
                 # just the normal splits
                 splits = [
