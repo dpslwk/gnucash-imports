@@ -139,7 +139,13 @@ with open_book(bookPath, readonly=False) as book:
                     # payments less than the minimum are counted as donations
                     splits=[
                         Split(account=tsbAccount, value=amount),
-                        Split(account=donationsMembershipAccount, value=amount),
+                        Split(account=donationsMembershipAccount, value=-1*amount),
+                    ];
+                elif transaction['amount'] == auditMinimumAmount:
+                    # just the normal splits
+                    splits = [
+                        Split(account=tsbAccount, value=amount),
+                        Split(account=transferAccount, value=-1*amount)
                     ];
                 else:
                     membershipAmount = Decimal(auditMinimumAmount)/100
@@ -155,7 +161,7 @@ with open_book(bookPath, readonly=False) as book:
                 splits = [
                     Split(account=tsbAccount, value=amount),
                     Split(account=transferAccount, value=-1*amount)
-                    ];
+                ];
 
             # now we have the splits we can create the trasnaction
             Transaction(currency=gbp,
