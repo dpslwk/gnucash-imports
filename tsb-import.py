@@ -153,8 +153,8 @@ with open_book(bookPath, readonly=False) as book:
 
                     splits=[
                         Split(account=tsbAccount, value=amount),
-                        Split(account=transferAccount, value=membershipAmount),
-                        Split(account=donationsMembershipAccount, value=donationsAmount),
+                        Split(account=transferAccount, value=-1*membershipAmount),
+                        Split(account=donationsMembershipAccount, value=-1*donationsAmount),
                     ];
             else:
                 # just the normal splits
