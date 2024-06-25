@@ -7,11 +7,11 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-piecash = {git = "https://github.com/sdementen/piecash"}
 stripe = "^10.0.0"
 requests = "^2.32.3"
 requests-oauthlib = "^2.0.0"
 python-dateutil = "^2.9.0.post0"
+piecash = "^1.2.0"
 
 
 [build-system]
