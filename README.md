@@ -37,3 +37,9 @@ You need to use something like Postman to get a inital `access` and `refresh` to
 
 ## TSB
 This is expected to be called from TSBScrape
+
+## Wiki Report
+
+```crontab
+0 18 1-7 * * test $(date +\\%u) -eq 3 && ./wiki-report.py $(date +\%Y-%m -d "14 days ago")
+```

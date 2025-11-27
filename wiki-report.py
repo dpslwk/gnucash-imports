@@ -46,7 +46,10 @@ import os
 import sys
 import json
 import hashlib
+import warnings
+from sqlalchemy import exc as sa_exc
 
+warnings.simplefilter("ignore", category=sa_exc.SAWarning)
 
 dirname = os.path.dirname(os.path.realpath(__file__))
 
@@ -99,7 +102,7 @@ siteUrl = config['WikiReport']['site_url']
 username = config['WikiReport']['username']
 password = config['WikiReport']['password']
 
-lastRunDate = datetime.strptime(config['Stripe']['last_run'], '%Y-%m-%dT%H:%M:%S.%f')
+lastRunDate = datetime.strptime(config['WikiReport']['last_run'], '%Y-%m-%dT%H:%M:%S.%f')
 logger.info('Last Run: ' + str(lastRunDate))
 
 logger.info("GnuCash book: {}".format(bookPath))
@@ -160,15 +163,6 @@ def update_mediawiki_page_mwclient(
 
 
 with open_book(bookPath, readonly=True) as book:
-
-
-    # tsbAccount = book.accounts(fullname="Assets:Current Assets:TSB Account")
-    # # grab extra accounts we need
-    # g456Account = book.accounts(fullname="Expenses:Bizspace Rent:G4,5,6")
-    # electricAccount = book.accounts(fullname="Expenses:Utilities:Electric")
-    # donationsMembershipAccount = book.accounts(fullname="Income:Donations:Membership Payments")
-    # gbp = tsbAccount.commodity
-
     overallAssetsAccount = book.accounts(fullname="Assets")
     currentAssetsAccount = book.accounts(fullname="Assets:Current Assets")
     otherAssetsAccount = book.accounts(fullname="Assets:Other Assets")
@@ -256,7 +250,6 @@ with open_book(bookPath, readonly=True) as book:
         summary="Automated Financials Report",
         minor=True,
     )
-
 
     # update last run date
     config['WikiReport']['last_run'] = datetime.now().isoformat()

@@ -34,6 +34,10 @@ import pytz
 from decimal import Decimal
 import configparser
 import logging
+import warnings
+from sqlalchemy import exc as sa_exc
+
+warnings.simplefilter("ignore", category=sa_exc.SAWarning)
 
 # setup initial Logging
 logging.getLogger().setLevel(logging.NOTSET)
@@ -82,7 +86,7 @@ with open_book(bookPath, readonly=False) as book:
     donationsIncomeAccount = book.accounts(fullname="Income:Donations")
     gbp = stripeAccount.commodity
 
-    for stripeTransaction in reversed(stripeTransactions.to_dict()['data']):
+    for stripeTransaction in reversed(stripeTransactions.to_dict()['data']): # stripe.util.convert_to_dict
         try:
             # see if we have already recorded this transaction
             book.transactions.get(num=stripeTransaction.id)

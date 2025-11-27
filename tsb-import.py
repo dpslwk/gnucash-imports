@@ -40,6 +40,10 @@ import os
 import sys
 import json
 import hashlib
+import warnings
+from sqlalchemy import exc as sa_exc
+
+warnings.simplefilter("ignore", category=sa_exc.SAWarning)
 
 dirname = os.path.dirname(os.path.realpath(__file__))
 

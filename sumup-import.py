@@ -34,6 +34,10 @@ import pytz
 from decimal import Decimal
 import configparser
 import logging
+import warnings
+from sqlalchemy import exc as sa_exc
+
+warnings.simplefilter("ignore", category=sa_exc.SAWarning)
 
 # setup initial Logging
 logging.getLogger().setLevel(logging.NOTSET)
