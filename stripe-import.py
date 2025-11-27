@@ -136,7 +136,9 @@ with open_book(bookPath, readonly=False) as book:
             logger.info("Saved charge: {}, {}, {}".format(stripeTransaction.id, createdAt.date(), description))
         elif stripeTransaction.type == 'adjustment':
             description = "Stripe: " + stripeTransaction.description
-            if net < 0:
+            if net == 0:
+                toAccount = donationsIncomeAccount
+            elif net < 0:
                 toAccount = miscellaneousExpenseAccount
             else:
                 stripeCharge = stripe.Charge.retrieve(stripeTransaction.source.charge)

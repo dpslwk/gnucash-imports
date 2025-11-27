@@ -1,0 +1,35 @@
+
+A breakdown of our finances for the month of {{ month }}, {{ year }}. {{ '{{' }}finmonth{{ '}}' }}
+
+==Quick summary==
+
+Overall Assets: {{ overallAssets }}
+
+'''{{ currentAssets['name'] }}''' {{ currentAssets['amount'] }}<br>
+{% for name, amount in currentAssets['children'] | dictsort(by='key') %}
+:{{ name|e }} {{ amount|e }}<br>{% endfor %}
+
+'''{{ otherAssets['name'] }}'''<br>
+{% for name, amount in otherAssets['children'] | dictsort(by='key') %}
+:{{ name|e }} {{ amount|e }}<br>{%  endfor %}
+
+Imbalance {{imbalance}}<br>
+
+==In/out Breakdown==
+
+'''Income'''<br>{% for account in income | sort(attribute='name') %}
+{{ account['name'] }} {{ account['amount'] }}<br>{% for name, amount in account['children'] | dictsort(by='key') %}
+:{{ name|e }} {{ amount|e }}<br>{% endfor %}{% endfor %}
+
+'''Total Revenue {{ totalRevenue }}'''
+
+
+'''Expenses'''<br>{% for account in expenses | sort(attribute='name') %}
+{{ account['name'] }} {{ account['amount'] }}<br>{% for name, amount in account['children'] | dictsort(by='key') %}
+:{{ name|e }} {{ amount|e }}<br>{% endfor %}{% endfor %}
+
+'''Total Expenses {{ totalExpenses }}'''<br>
+
+'''Net {{ profitOrLoss }} for Period {{ net }}'''
+
+[[Category: Financials|^Year {{ wikiYear }}^]]

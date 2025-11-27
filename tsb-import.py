@@ -74,7 +74,7 @@ with open_book(bookPath, readonly=False) as book:
     tsbAccount = book.accounts(fullname="Assets:Current Assets:TSB Account")
     # grab extra accounts we need
     g456Account = book.accounts(fullname="Expenses:Bizspace Rent:G4,5,6")
-    electricAccont = book.accounts(fullname="Expenses:Utilities:Electric")
+    electricAccount = book.accounts(fullname="Expenses:Utilities:Electric")
     donationsMembershipAccount = book.accounts(fullname="Income:Donations:Membership Payments")
     gbp = tsbAccount.commodity
 
@@ -132,7 +132,7 @@ with open_book(bookPath, readonly=False) as book:
                     Split(account=tsbAccount, value=amount),
                     Split(account=transferAccount, value=f6Amount), #F6
                     Split(account=g456Account, value=g456Amount),
-                    Split(account=electricAccont, value=-1*electricAmount)
+                    Split(account=electricAccount, value=-1*electricAmount)
                 ];
             elif transaction['transferAccount'] == 'Income:Membership Payments':
                 if transaction['amount'] < auditMinimumAmount:
