@@ -2,3 +2,4 @@ imports.cfg
 *.log
 *.gnucash
 wiki-reports
+vat-reports

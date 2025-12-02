@@ -154,8 +154,6 @@ def update_mediawiki_page_mwclient(
     # Get page object
     page = site.pages[page_title.replace(" ", "_")]
 
-    print(f"page exists: {page.exists}")
-
     # Save content (creates page if it doesn't exist)
     page.save(content, summary=summary, minor=minor)
 
